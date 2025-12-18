@@ -45,38 +45,37 @@ Or use the shortcut:
 ## 🔧 Configuration
 
 ### Adding Phishing Domains
+*(Use this when adding new domains for campaigns - e.g. login-google.com)*
 
-Edit `.env` and add domains:
+1. Edit `.env` and add/modify `PHISH_DOMAIN` variables:
+   ```properties
+   PHISH_DOMAIN=phish.example.com
+   PHISH_DOMAIN_1=mail.example.com
+   ```
+2. Run standard deployment flow:
+   ```bash
+   python3 setup.py
+   docker compose down
+   docker compose up -d
+   ```
+**Note:** You do NOT need to touch `config.json` for this.
 
-```properties
-# Main phishing domain
-PHISH_DOMAIN=phish.${DOMAIN}
+### Changing Admin Domain
+*(Use this ONLY when changing the URL you use to access the Gophish dashboard)*
 
-# Additional domains (create as many as needed)
-PHISH_DOMAIN_1=mail.${DOMAIN}
-PHISH_DOMAIN_2=hrm.${DOMAIN}
-PHISH_DOMAIN_3=secure.${DOMAIN}
-```
+1. Edit `.env` and update `ADMIN_DOMAIN`.
+2. **IMPORTANT**: You MUST delete the existing config file so it can be regenerated with the new domain:
+   ```bash
+   rm data/config.json
+   ```
+3. Run deployment:
+   ```bash
+   python3 setup.py
+   docker compose down
+   docker compose up -d
+   ```
 
-Then run:
-```bash
-./deploy.sh --restart
-```
-
-### Changing Base Domain
-
-```bash
-# Edit .env
-DOMAIN=newdomain.com
-
-# All subdomains auto-update:
-# - gophish.newdomain.com (admin panel)
-# - phish.newdomain.com (phishing server)
-# - traefik.newdomain.com (traefik dashboard)
-
-# Restart
-./deploy.sh --restart
-```
+*Reason: Gophish's configuration script preserves existing config files to prevent data loss. Deleting it forces the script to regenerate it with the new `trusted_origins` setting required for CSRF protection.*
 
 ## 📁 File Structure
 

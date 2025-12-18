@@ -16,15 +16,11 @@ WORKDIR /build
 # Clone Gophish repository
 RUN git clone https://github.com/gophish/gophish.git .
 
-# CSRF Protection Disabled for Reverse Proxy Compatibility
-# gorilla/csrf validation was rejecting POST /login requests even with trusted_origins configured
-# Temporary fix: Disable CSRF protection to allow login functionality through Traefik reverse proxy
-# TODO: Implement proper CSRF fix:
-# - Create middleware to reconstruct proper Origin from X-Forwarded-* headers before CSRF validation
-# - OR modify gorilla/csrf initialization to properly handle reverse proxy scenarios
-# - OR implement custom CSRF protection that doesn't rely on Referer header validation
-RUN sed -i '155,158s/^/\/\/ /' controllers/route.go && \
-    sed -i 's/adminHandler := csrfHandler(router)/adminHandler := handlers.ProxyHeaders(router)/' controllers/route.go
+# CSRF Protection Fix for Reverse Proxy - Config Fix Only
+# We fixed generate-config.sh to correctly place trusted_origins (without scheme).
+# r.URL.Scheme is already handled by handlers.ProxyHeaders (X-Forwarded-Proto).
+# No Dockerfile code injection needed, just proper config generation.
+
 
 # Set CGO for SQLite
 ENV CGO_ENABLED=1

@@ -22,7 +22,8 @@ if [ ! -f /app/data/config.json ]; then
     "listen_url": "0.0.0.0:3333",
     "use_tls": false,
     "cert_path": "/app/data/gophish_admin.crt",
-    "key_path": "/app/data/gophish_admin.key"
+    "key_path": "/app/data/gophish_admin.key",
+    "trusted_origins": ["${ADMIN_DOMAIN}"]
   },
   "phish_server": {
     "listen_url": "0.0.0.0:80",
@@ -34,7 +35,6 @@ if [ ! -f /app/data/config.json ]; then
   "db_path": "/app/data/gophish.db",
   "migrations_prefix": "db/db_",
   "contact_address": "",
-  "trusted_origins": ["https://${ADMIN_DOMAIN}"],
   "logging": {
     "filename": "",
     "level": "info"

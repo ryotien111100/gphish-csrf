@@ -58,13 +58,13 @@ services:
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
 
-      # Gophish headers middleware - pass correct protocol and handle referer
+      # Gophish headers middleware - pass forwarding headers for CSRF middleware
+      # Note: Origin and Referer are NOT set here - they are reconstructed by
+      # reverseProxyOriginFix middleware inside Gophish from X-Forwarded-* headers
       - "traefik.http.middlewares.gophish-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "traefik.http.middlewares.gophish-headers.headers.customrequestheaders.X-Forwarded-Port=443"
       - "traefik.http.middlewares.gophish-headers.headers.customrequestheaders.X-Scheme=https"
       - "traefik.http.middlewares.gophish-headers.headers.customrequestheaders.X-Forwarded-Host=${ADMIN_DOMAIN}"
-      - "traefik.http.middlewares.gophish-headers.headers.customrequestheaders.Origin=https://${ADMIN_DOMAIN}"
-      - "traefik.http.middlewares.gophish-headers.headers.customrequestheaders.Referer=https://${ADMIN_DOMAIN}/login"
 
       # Admin interface - HTTP router (redirect only)
       - "traefik.http.routers.gophish-admin-http.entrypoints=http"
